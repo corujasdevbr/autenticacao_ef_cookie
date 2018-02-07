@@ -1,0 +1,20 @@
+@model Autenticacao_EF_Cookie.Models.Usuario
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form asp-action="Login">
+    <div  class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div  class="form-group">
+        <label asp-for="Senha" class="control-label"></label>
+        <input asp-for="Senha" class="form-control" />
+    </div>
+    <div>
+        <button type="submit" >Logar</button>
+    </div>
+</form>
