@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,7 +32,9 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @{  if(User.Identity.IsAuthenticated){ 
+                    @{  
+                        if(User.Identity.IsAuthenticated)
+                        { 
                             if(User.IsInRole("Financeiro")){  
                                 <li><a asp-area="" asp-controller="Financeiro" asp-action="Index">Financeiro</a></li>
                             }
@@ -38,10 +42,27 @@
                             if(User.IsInRole("Recursos Humanos")){  
                                 <li><a asp-area="" asp-controller="RecursosHumanos" asp-action="Index">Recursos Humanos</a></li>
                             }
-                            <li><a asp-area="" asp-controller="Conta" asp-action="Sair">Sair</a></li>
+                            
+                            @*
+                            <p>@User.Idenity.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault();</p>
+                            <p>@User.Idenity.Claims.Where(c => c.Type == "Fullname").Select(c => c.Value).SingleOrDefault();</p>
+
+                            *@
                         }
                     }
                 </ul>
+                @{
+                    if(User.Identity.IsAuthenticated)
+                    {
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#">@User.Identity.Name</a></li>
+                            <li><a href="#">@User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault()</a></li>
+                            @*<li><a href="#">@User.Claims.Where(c => c.Type == "FullName").Select(c => c.Value).SingleOrDefault()</a></li>*@
+                            
+                            <li><a asp-area="" asp-controller="Conta" asp-action="Sair">Sair</a></li>
+                        </ul>
+                    }
+                }
             </div>
         </div>
     </nav>

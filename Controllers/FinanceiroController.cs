@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Security.Claims;
 using Autenticacao_EF_Cookie.Repositorio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,8 @@ namespace Autenticacao_EF_Cookie.Controllers
         }
 
         public IActionResult Index(){
+            
+
             return View();
         }
         

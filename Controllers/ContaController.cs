@@ -51,6 +51,7 @@ insert Into UsuariosPermissoes values((select max(IdPermissao) from Permissoes),
                     var claims = new List<Claim>();
                     claims.Add(new Claim(ClaimTypes.Email, user.Email));
                     claims.Add(new Claim(ClaimTypes.Name, user.Nome));
+                    claims.Add(new Claim("FullName", user.Nome));
 
                     foreach (var item in user.UsuariosPermissoes)
                     {
