@@ -42,12 +42,6 @@
                             if(User.IsInRole("Recursos Humanos")){  
                                 <li><a asp-area="" asp-controller="RecursosHumanos" asp-action="Index">Recursos Humanos</a></li>
                             }
-                            
-                            @*
-                            <p>@User.Idenity.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault();</p>
-                            <p>@User.Idenity.Claims.Where(c => c.Type == "Fullname").Select(c => c.Value).SingleOrDefault();</p>
-
-                            *@
                         }
                     }
                 </ul>
@@ -56,9 +50,7 @@
                     {
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="#">@User.Identity.Name</a></li>
-                            <li><a href="#">@User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault()</a></li>
-                            @*<li><a href="#">@User.Claims.Where(c => c.Type == "FullName").Select(c => c.Value).SingleOrDefault()</a></li>*@
-                            
+                            <li><a href="#">@User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault()</a></li>                            
                             <li><a asp-area="" asp-controller="Conta" asp-action="Sair">Sair</a></li>
                         </ul>
                     }
