@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Autenticacao_EF_Cookie.Controllers
 {
@@ -32,24 +33,41 @@ namespace Autenticacao_EF_Cookie.Controllers
         {
             try
             {
-                Usuario user = _contexto.Usuarios.FirstOrDefault(c => c.Email == usuario.Email || 
+
+                /*
+insert into Usuarios values('colte12@gmail.com', 'Ligia', '123456')
+insert into Permissoes values('Contabilidade')
+insert Into UsuariosPermissoes values((select max(IdPermissao) from Permissoes), (select max(idusuario) from Usuarios))
+insert Into UsuariosPermissoes values((select max(IdPermissao) from Permissoes),(select IdUsuario from Usuarios where Email = 'fernando.guerra@corujasdev.com.br'))
+
+                 */
+                Usuario user = _contexto.Usuarios.Include("UsuariosPermissoes")
+                                                .Include("UsuariosPermissoes.Permissao")
+                                                .FirstOrDefault(c => c.Email == usuario.Email || 
                                                                     c.Senha == usuario.Senha );
 
                 if (user != null)
                 {
-                    List<Claim> claims = GetClaims(user); //Get the claims from the headers or db or your user store
-                    if (null != claims)
+                    var claims = new List<Claim>();
+                    claims.Add(new Claim(ClaimTypes.Email, user.Email));
+                    claims.Add(new Claim(ClaimTypes.Name, user.Nome));
+
+                    foreach (var item in user.UsuariosPermissoes)
                     {
-                        var claimsIdentity = new ClaimsIdentity(
-                            claims, CookieAuthenticationDefaults.AuthenticationScheme
-                        );
-
-                        HttpContext.SignInAsync( CookieAuthenticationDefaults.AuthenticationScheme, 
-                                    new ClaimsPrincipal(claimsIdentity));
-
-                        return RedirectToAction("Index", "Home");
+                        claims.Add(new Claim(ClaimTypes.Role, item.Permissao.Nome));
                     }
+                    
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme
+                    );
+
+                    HttpContext.SignInAsync( CookieAuthenticationDefaults.AuthenticationScheme, 
+                        new ClaimsPrincipal(claimsIdentity));
+
+                    return RedirectToAction("Index", "Financeiro");
                 }
+
+                TempData["Mensagem"] = "Usuário ou senha inválidos";
 
                 return View();
             }
@@ -58,15 +76,13 @@ namespace Autenticacao_EF_Cookie.Controllers
                 ModelState.AddModelError("", ex.Message);
                 return View(usuario);
             }
-
-            
         }
 
         private List<Claim> GetClaims(Usuario usuario)
         {
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Email, usuario.Email));
-            claims.Add(new Claim(ClaimTypes.Name, usuario.Nome));
+            claims.Add(new Claim("Nome", usuario.Nome));
 
             foreach (var item in usuario.UsuariosPermissoes)
             {
@@ -74,6 +90,13 @@ namespace Autenticacao_EF_Cookie.Controllers
             }
 
             return claims;
+        }
+
+        [HttpGet]
+        public IActionResult Sair(){
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Login");
         }
     }
 }
