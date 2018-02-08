@@ -26,13 +26,13 @@ namespace Autenticacao_EF_Cookie.Repositorio
             };
             contexto.Permissoes.Add(permissao);
 
-            var turma = new UsuariosPermissoes()
+            var usuariopermissao = new UsuariosPermissoes()
             {
                 IdUsuario = usuario.IdUsuario,
                 IdPermissao = permissao.IdPermissao
             };
 
-            contexto.UsuariosPermissoes.Add(turma);
+            contexto.UsuariosPermissoes.Add(usuariopermissao);
             contexto.SaveChanges();
 
         }
