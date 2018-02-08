@@ -43,7 +43,7 @@ insert Into UsuariosPermissoes values((select max(IdPermissao) from Permissoes),
                  */
                 Usuario user = _contexto.Usuarios.Include("UsuariosPermissoes")
                                                 .Include("UsuariosPermissoes.Permissao")
-                                                .FirstOrDefault(c => c.Email == usuario.Email || 
+                                                .FirstOrDefault(c => c.Email == usuario.Email && 
                                                                     c.Senha == usuario.Senha );
 
                 if (user != null)
